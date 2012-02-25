@@ -18,5 +18,5 @@ matrix = SparseMatrix
 multilevelLinearSolver = KSP_petsc4py
 linearSmoother = Jacobi
 l_atol_res = 1.0e-8
-parallelPartitioningType = MeshParallelPartitioningTypes.node
-nLayersOfOverlapForParallel = 0
+parallelPartitioningType = MeshParallelPartitioningTypes.element
+nLayersOfOverlapForParallel = 1
