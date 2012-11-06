@@ -1,3 +1,6 @@
 [submodule "three.js"]
 	path = three.js
 	url = git://github.com/mrdoob/three.js.git
+[submodule "d3"]
+	path = d3
+	url = git://github.com/mbostock/d3.git
