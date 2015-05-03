@@ -1,28 +1,41 @@
 from proteus import *
 from twp_navier_stokes_p import *
-from wavetank import *
+from tank import *
 
-timeIntegration = BackwardEuler
-stepController  = Min_dt_controller
+if timeDiscretization=='vbdf':
+    timeIntegration = VBDF
+    timeOrder=2
+    stepController  = Min_dt_cfl_controller
+elif timeDiscretization=='flcbdf':
+    timeIntegration = FLCBDF
+    #stepController = FLCBDF_controller_sys
+    stepController  = Min_dt_cfl_controller
+    time_tol = 10.0*ns_nl_atol_res
+    atol_u = {1:time_tol,2:time_tol}
+    rtol_u = {1:time_tol,2:time_tol}
+else:
+    timeIntegration = BackwardEuler_cfl
+    stepController  = Min_dt_cfl_controller
 
 femSpaces = {0:basis,
 	     1:basis,
-	     2:basis,
-	     3:basis}
+	     2:basis}
 
 massLumping       = False
 numericalFluxType = None
 conservativeFlux  = None
-numericalFluxType = NavierStokes_Advection_DiagonalUpwind_Diffusion_IIPG_exterior 
-subgridError = NavierStokesASGS_velocity_pressure_optV2(coefficients,nd,lag=True,delayLagSteps=1,hFactor=hFactor,noPressureStabilization=False)
-shockCapturing = NavierStokes_SC_opt(coefficients,nd,ns_shockCapturingFactor,lag=True)
+
+numericalFluxType = RANS2P.NumericalFlux
+subgridError = RANS2P.SubgridError(coefficients,nd,lag=ns_lag_subgridError,hFactor=hFactor)
+shockCapturing = RANS2P.ShockCapturing(coefficients,nd,ns_shockCapturingFactor,lag=ns_lag_shockCapturing)
 
 fullNewtonFlag = True
-multilevelNonlinearSolver = NewtonNS
-levelNonlinearSolver      = NewtonNS
+multilevelNonlinearSolver = Newton
+levelNonlinearSolver      = Newton
 
 nonlinearSmoother = None
-linearSmoother    = None
+
+linearSmoother    = SimpleNavierStokes2D
 
 matrix = SparseMatrix
 
@@ -36,13 +49,17 @@ else:
 if useSuperlu:
     multilevelLinearSolver = LU
     levelLinearSolver      = LU
-    
+
 linear_solver_options_prefix = 'rans2p_'
+nonlinearSolverConvergenceTest = 'rits'
 levelNonlinearSolverConvergenceTest = 'rits'
-linearSolverConvergenceTest         = 'rits'
+linearSolverConvergenceTest             = 'rits-true'
 
-tolFac = 1e-3
-nl_atol_res = 0.0
-
-maxNonlinearIts = 10
+tolFac = 0.0
+linTolFac = 0.01
+l_atol_res = 0.01*ns_nl_atol_res
+nl_atol_res = ns_nl_atol_res
+useEisenstatWalker = False
+maxNonlinearIts = 50
 maxLineSearches = 0
+conservativeFlux = {0:'pwl-bdm-opt'}

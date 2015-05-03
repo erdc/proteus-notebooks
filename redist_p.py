@@ -1,7 +1,7 @@
 from proteus import *
 from proteus.default_p import *
 from math import *
-from wavetank import *
+from tank import *
 from proteus.mprans import RDLS
 """
 The redistancing equation in the sloshbox test problem.
@@ -9,11 +9,12 @@ The redistancing equation in the sloshbox test problem.
 
 LevelModelType = RDLS.LevelModel
 
-coefficients = RDLS.Coefficients(applyRedistancing=True,
+coefficients = RDLS.Coefficients(applyRedistancing=applyRedistancing,
                                  epsFact=epsFact_redistance,
-                                 nModelId=1,
+                                 nModelId=2,
                                  rdModelId=3,
-		                 useMetrics=useMetrics)
+                                 useMetrics=useMetrics,
+                                 backgroundDiffusionFactor=backgroundDiffusionFactor)
 
 def getDBC_rd(x,flag):
     pass

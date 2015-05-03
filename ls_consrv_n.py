@@ -1,5 +1,5 @@
 from proteus import *
-from wavetank import *
+from tank import *
 from ls_consrv_p import *
 
 timeIntegrator  = ForwardIntegrator
@@ -28,15 +28,21 @@ if useOldPETSc:
 else:
     multilevelLinearSolver = KSP_petsc4py
     levelLinearSolver      = KSP_petsc4py
+
 if useSuperlu:
     multilevelLinearSolver = LU
     levelLinearSolver      = LU
 
 linear_solver_options_prefix = 'mcorr_'
-linearSolverConvergenceTest  = 'rits'
+nonlinearSolverConvergenceTest = 'rits'
+levelNonlinearSolverConvergenceTest = 'rits'
+linearSolverConvergenceTest  = 'rits-true'
 
 tolFac = 0.0
-nl_atol_res = 1.0e-5
+linTolFac = 0.01
+l_atol_res = 0.01*mcorr_nl_atol_res
+nl_atol_res = mcorr_nl_atol_res
+useEisenstatWalker = False
 
-maxNonlinearIts = 10
+maxNonlinearIts = 50
 maxLineSearches = 0
