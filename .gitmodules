@@ -6,4 +6,4 @@
 	url = git://github.com/mbostock/d3.git
 [submodule "proteus.js"]
 	path = proteus.js
-	url = git@github.com:erdc-cm/proteus.js.git
+	url = git@github.com:erdc/proteus.js.git
